@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:17.5
+    container_name: medods_postgres
+    env_file:
+      - .env
+  backend:
+    build:
+      context: .
+      dockerfile: go.Dockerfile
+    container_name: medods_backend
+    env_file:
+      - .env
+    ports:
+      - 80:8877
