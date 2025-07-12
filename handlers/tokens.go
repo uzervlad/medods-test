@@ -41,9 +41,7 @@ func (h *Handlers) generateAccessToken(guid string, token_id int) (string, bool)
 		},
 	}).SignedString([]byte(jwtSecret))
 	if err != nil {
-		//     :\
 		h.invalidateToken(token_id)
-		// h.pool.Exec(context.Background(), "delete from tokens where id = $1", token_id)
 		return "", false
 	}
 
