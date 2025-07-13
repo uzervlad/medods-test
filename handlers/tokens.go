@@ -4,13 +4,14 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"medods/models"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
-const jwtSecret = "medods"
+var jwtSecret = os.Getenv("JWT_SECRET")
 
 func (h *Handlers) generateRefreshToken(guid, useragent, ip string) (int, string, bool) {
 	refresh_bytes := make([]byte, 64)
@@ -54,7 +55,7 @@ func (h *Handlers) invalidateToken(token_id int) bool {
 
 func (h *Handlers) validateToken(t string) (*models.Claims, bool) {
 	token, err := jwt.ParseWithClaims(t, &models.Claims{}, func(t *jwt.Token) (interface{}, error) {
-		return []byte("medods"), nil
+		return []byte(jwtSecret), nil
 	})
 	if err != nil {
 		return &models.Claims{}, false
