@@ -53,12 +53,16 @@ func main() {
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
-	handlers := handlers.CreateHandlers(pool, &db)
+	handlers := handlers.CreateHandlers(&db)
 
 	router.GET("/tokens", handlers.GetTokens)
 	router.POST("/refresh", handlers.RefreshToken)
-	router.POST("/uuid", handlers.GetUUID)
-	router.POST("/logout", handlers.Logout)
+
+	protected := router.Group("/", handlers.AuthMiddleware())
+	{
+		protected.POST("/uuid", handlers.GetUUID)
+		protected.POST("/logout", handlers.Logout)
+	}
 
 	router.Run(":8877")
 }

@@ -56,13 +56,3 @@ func (d *Database) DeleteToken(token_id int) bool {
 	_, err := d.pool.Exec(context.Background(), "delete from tokens where id = $1", token_id)
 	return err == nil
 }
-
-func (d *Database) TokenExists(token_id int) bool {
-	var exists bool
-	err := d.pool.QueryRow(
-		context.Background(),
-		"select exists(select 1 from tokens where id = $1)",
-		token_id,
-	).Scan(&exists)
-	return err == nil && exists
-}
