@@ -27,7 +27,7 @@ func CreateHandlers(database *database.Database) Handlers {
 
 // GetTokens
 //
-//	@Summary	Get token for user
+//	@Summary	Get tokens for user
 //	@Router		/tokens [get]
 //	@Produce	json
 //	@Param		guid	query		string					true	"User GUID"
