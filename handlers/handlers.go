@@ -31,7 +31,7 @@ func CreateHandlers(database *database.Database) Handlers {
 //	@Router		/tokens [get]
 //	@Produce	json
 //	@Param		guid	query		string					true	"User GUID"
-//	@Success	200		{object}	models.TokenResponse	"`refresh_token` is a base64-encoded string, and should be decoded when used"
+//	@Success	200		{object}	models.TokenResponse
 //	@Failure	400		{object}	models.ErrorResponse
 //	@Failure	500		{object}	models.ErrorResponse
 func (h *Handlers) GetTokens(ctx *gin.Context) {
@@ -125,7 +125,14 @@ func (h *Handlers) RefreshToken(ctx *gin.Context) {
 		return
 	}
 
-	refresh_bytes, err := hex.DecodeString(body.RefreshToken)
+	refresh_decoded, err := base64.StdEncoding.DecodeString(body.RefreshToken)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, models.ErrorResponse{
+			Error: "Invalid token",
+		})
+		return
+	}
+	refresh_bytes, err := hex.DecodeString(string(refresh_decoded))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, models.ErrorResponse{
 			Error: "Invalid token",
