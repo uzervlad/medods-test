@@ -155,6 +155,8 @@ func (h *Handlers) RefreshToken(ctx *gin.Context) {
 		h.webhookPost(claims.GUID, token.IP.String(), ip)
 	}
 
+	h.invalidateToken(claims.TokenID)
+
 	token_id, refresh_token, ok := h.generateRefreshToken(claims.GUID, useragent, ip)
 	if !ok {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, models.ErrorResponse{
